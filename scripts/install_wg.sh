@@ -38,6 +38,7 @@ cat > /etc/wireguard/$WG_INTERFACE.conf <<EOF
 [Interface]
 Address = $WG_SERVER_IP/24
 ListenPort = $WG_PORT
+MTU = 1280
 PrivateKey = $SERVER_PRIVATE_KEY
 
 PostUp = iptables -I INPUT 1 -p udp --dport $WG_PORT -j ACCEPT; iptables -I FORWARD 1 -i $WG_INTERFACE -j ACCEPT; iptables -I FORWARD 1 -o $WG_INTERFACE -j ACCEPT; iptables -t nat -A POSTROUTING -s $WG_NETWORK -o $ETH_INTERFACE -j MASQUERADE

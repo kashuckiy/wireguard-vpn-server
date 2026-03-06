@@ -46,6 +46,7 @@ cat > $CLIENT_DIR/$CLIENT_NAME.conf <<EOF
 PrivateKey = $CLIENT_PRIVATE_KEY
 Address = $CLIENT_IP/24
 DNS = 1.1.1.1
+MTU = 1280
 
 [Peer]
 PublicKey = $SERVER_PUBLIC_KEY
