@@ -57,6 +57,16 @@ EOF
 echo "Конфіг клієнта створено:"
 cat $CLIENT_DIR/$CLIENT_NAME.conf
 
+# Збереження копії у локальну директорію ./clients в папці проекту
+LOCAL_CLIENT_DIR="./clients"
+mkdir -p "$LOCAL_CLIENT_DIR"
+cp "$CLIENT_DIR/$CLIENT_NAME.conf" "$LOCAL_CLIENT_DIR/"
+if [ -n "$SUDO_USER" ]; then
+    chown -R "$SUDO_USER:$(id -g $SUDO_USER 2>/dev/null || echo $SUDO_USER)" "$LOCAL_CLIENT_DIR"
+fi
+echo ""
+echo "Також збережено локально: $LOCAL_CLIENT_DIR/$CLIENT_NAME.conf"
+
 echo ""
 echo "QR код:"
 

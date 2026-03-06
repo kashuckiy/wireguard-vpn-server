@@ -5,6 +5,7 @@
 # ---------------------------------------------------------
 
 WG_INTERFACE=wg0
+WG_CONFIG="/etc/wireguard/$WG_INTERFACE.conf"
 CLIENT_DIR="/etc/wireguard/clients"
 
 CLIENT_NAME=$1
@@ -28,5 +29,11 @@ if [ ! -z "$LINE_NUM" ]; then
 fi
 
 rm $CLIENT_FILE
+
+# Видалити також з локальної директорії ./clients, якщо існує
+LOCAL_CLIENT_FILE="./clients/$CLIENT_NAME.conf"
+if [ -f "$LOCAL_CLIENT_FILE" ]; then
+    rm "$LOCAL_CLIENT_FILE"
+fi
 
 echo "Клієнт видалений"

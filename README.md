@@ -27,22 +27,52 @@
 2. **Права доступу:** Користувач з правами `sudo` або `root`.
 3. **Firewall (Брандмауер):** Переконайтеся, що порт **51820 / UDP** відкритий у налаштуваннях безпеки вашого хмарного провайдера (наприклад, Security Lists в Oracle Cloud або Security Groups в AWS) та локальному файрволі (UFW / iptables).
 
+### ☁️ Особливості для Oracle Cloud (Запуск на безкоштовному ARM / AMD)
+
+Якщо ви розгортаєте сервер на **Oracle Cloud**, слід звернути увагу на два важливі кроки:
+
+1. **Відкриття порту в панелі Oracle (VCN):**
+   - Перейдіть ресурсної сторінки інстансу -> **Virtual Cloud Network (VCN)** -> **Subnet** -> **Default Security List**.
+   - Додайте нове правило (Add Ingress Rules):
+     - **Source Type:** CIDR
+     - **Source CIDR:** `0.0.0.0/0`
+     - **IP Protocol:** UDP
+     - **Destination Port Range:** `51820`
+2. **Відкриття порту в локальному файрволі (Ubuntu):**
+   - Образи Ubuntu в Oracle Cloud мають дуже жорсткі правила `iptables` за замовчуванням. Підключіться по SSH та виконайте наступні команди, щоб відкрити порт:
+     ```bash
+     sudo iptables -I INPUT 6 -m state --state NEW -p udp --dport 51820 -j ACCEPT
+     sudo netfilter-persistent save
+     ```
+   Після цього можете переходити до стандартного встановлення сервера.
+
 ---
 
-## 📦 Встановлення сервера
+## 📦 Встановлення сервера з нуля
 
-Клонуйте репозиторій на ваш VPS:
+Якщо ви налаштовуєте VPN сервер на абсолютно новому VPS, дотримуйтесь цих кроків:
 
-```bash
-git clone https://github.com/kashuckiy/wireguard-vpn-server.git
-cd wireguard-vpn-server
-```
+1. **Підключіться до вашого сервера по SSH:**
+   ```bash
+   ssh root@IP_ВАШОГО_СЕРВЕРА
+   ```
 
-Запустіть процес встановлення:
+2. **Оновіть систему та встановіть Git:**
+   ```bash
+   apt update && apt upgrade -y
+   apt install git -y
+   ```
 
-```bash
-make install
-```
+3. **Клонуйте репозиторій у ваш каталог:**
+   ```bash
+   git clone https://github.com/kashuckiy/wireguard-vpn-server.git
+   cd wireguard-vpn-server
+   ```
+
+4. **Запустіть процес встановлення:**
+   ```bash
+   make install
+   ```
 
 > **Що робить `make install`?**  
 > 1. Оновлює списки пакетів та встановлює `wireguard`, `qrencode`, `curl`.  
