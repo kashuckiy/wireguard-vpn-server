@@ -40,8 +40,8 @@ Address = $WG_SERVER_IP/24
 ListenPort = $WG_PORT
 PrivateKey = $SERVER_PRIVATE_KEY
 
-PostUp = iptables -t nat -A POSTROUTING -s $WG_NETWORK -o $ETH_INTERFACE -j MASQUERADE
-PostDown = iptables -t nat -D POSTROUTING -s $WG_NETWORK -o $ETH_INTERFACE -j MASQUERADE
+PostUp = iptables -I INPUT 1 -p udp --dport $WG_PORT -j ACCEPT; iptables -I FORWARD 1 -i $WG_INTERFACE -j ACCEPT; iptables -I FORWARD 1 -o $WG_INTERFACE -j ACCEPT; iptables -t nat -A POSTROUTING -s $WG_NETWORK -o $ETH_INTERFACE -j MASQUERADE
+PostDown = iptables -D INPUT -p udp --dport $WG_PORT -j ACCEPT; iptables -D FORWARD -i $WG_INTERFACE -j ACCEPT; iptables -D FORWARD -o $WG_INTERFACE -j ACCEPT; iptables -t nat -D POSTROUTING -s $WG_NETWORK -o $ETH_INTERFACE -j MASQUERADE
 EOF
 
 chmod 600 /etc/wireguard/$WG_INTERFACE.conf
